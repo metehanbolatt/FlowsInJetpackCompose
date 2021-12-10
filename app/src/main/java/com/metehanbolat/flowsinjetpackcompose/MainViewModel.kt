@@ -36,8 +36,7 @@ class MainViewModel: ViewModel() {
             flow.onEach {
                 println("FLOW: $it is delivered")
             }
-                .conflate()
-                .collect {
+                .collectLatest {
                     println("FLOW: Now eating $it")
                     delay(1500L)
                     println("FLOW: Finished eating $it")

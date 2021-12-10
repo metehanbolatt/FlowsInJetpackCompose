@@ -25,7 +25,7 @@ class MainViewModel: ViewModel() {
 
     private fun collectFlow(){
         viewModelScope.launch {
-            countDownFlow
+            val count = countDownFlow
                 .filter { time ->
                     time % 2 == 0
                 }
@@ -35,9 +35,10 @@ class MainViewModel: ViewModel() {
                 .onEach { time ->
                     println(time)
                 }
-                .collect { time ->
-                println("The current time is $time")
-            }
+                .count {
+                    it % 2 == 0
+                }
+            println("The count is $count")
         }
     }
 }

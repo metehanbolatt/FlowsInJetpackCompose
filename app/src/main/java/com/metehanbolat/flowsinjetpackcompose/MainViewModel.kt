@@ -3,9 +3,7 @@ package com.metehanbolat.flowsinjetpackcompose
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class MainViewModel: ViewModel() {
@@ -30,6 +28,12 @@ class MainViewModel: ViewModel() {
             countDownFlow
                 .filter { time ->
                     time % 2 == 0
+                }
+                .map { time ->
+                    time * time
+                }
+                .onEach { time ->
+                    println(time)
                 }
                 .collect { time ->
                 println("The current time is $time")

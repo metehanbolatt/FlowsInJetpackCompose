@@ -24,12 +24,24 @@ class MainViewModel: ViewModel() {
     }
 
     private fun collectFlow(){
+        val flow = flow {
+            delay(250L)
+            emit("Appetizer")
+            delay(1000L)
+            emit("Main dish")
+            delay(100L)
+            emit("Dessert")
+        }
         viewModelScope.launch {
-            val reduceResult = countDownFlow
-                .fold(100) { accumulator, value ->
-                    accumulator + value
+            flow.onEach {
+                println("FLOW: $it is delivered")
+            }
+                .buffer()
+                .collect {
+                    println("FLOW: Now eating $it")
+                    delay(1500L)
+                    println("FLOW: Finished eating $it")
                 }
-            println("The count is $reduceResult")
         }
     }
 }

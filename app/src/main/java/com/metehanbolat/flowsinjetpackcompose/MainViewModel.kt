@@ -19,8 +19,15 @@ class MainViewModel: ViewModel() {
         }
     }
 
+    private val _stateFlow = MutableStateFlow(0)
+    val stateFlow = _stateFlow.asStateFlow()
+
     init {
         collectFlow()
+    }
+
+    fun incrementCounter(){
+        _stateFlow.value += 1
     }
 
     private fun collectFlow(){

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
 import androidx.compose.material.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,6 +19,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.metehanbolat.flowsinjetpackcompose.ui.theme.FlowsInJetpackComposeTheme
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -34,6 +36,13 @@ class MainActivity : ComponentActivity() {
             FlowsInJetpackComposeTheme {
                 val viewModel = viewModel<MainViewModel>()
                 val count = viewModel.stateFlow.collectAsState(initial = 0)
+
+                LaunchedEffect(key1 = true){
+                    viewModel.sharedFlow.collect { number ->
+                        // collectLifecycleFlow
+                    }
+                }
+
                 Box(modifier = Modifier.fillMaxSize()){
                     Button(onClick = { viewModel.incrementCounter() }) {
                         Text(text = "Counter: ${count.value}")
@@ -45,6 +54,14 @@ class MainActivity : ComponentActivity() {
 }
 
 fun <T> ComponentActivity.collectLatestLifecycleFlow(flow: Flow<T>, collect: suspend (T) -> Unit){
+    lifecycleScope.launch {
+        repeatOnLifecycle(Lifecycle.State.STARTED){
+            flow.collectLatest(collect)
+        }
+    }
+}
+
+fun <T> ComponentActivity.collectLifecycleFlow(flow: Flow<T>, collect: suspend (T) -> Unit){
     lifecycleScope.launch {
         repeatOnLifecycle(Lifecycle.State.STARTED){
             flow.collectLatest(collect)
